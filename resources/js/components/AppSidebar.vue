@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Banana } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, ListCheck  } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -26,7 +26,22 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Categories',
         href: '/categories',
-        icon: Banana
+        icon: ListCheck 
+    },
+    {
+        title: 'Locations',
+        href: '/locations',
+        icon: ListCheck 
+    },
+    {
+        title: 'Manufacturers',
+        href: '/manufacturers',
+        icon: ListCheck 
+    },
+    {
+        title: 'Assets',
+        href: '/assets',
+        icon: ListCheck 
     }
 ];
 
