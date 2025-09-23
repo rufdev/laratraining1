@@ -17,7 +17,7 @@ class LocationFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->randomElement([
+            'name' => $this->faker->unique()->randomElement([
                 'Mayor\'s Office',
                 'Treasurer\'s Office',
                 'Assessor\'s Office',
