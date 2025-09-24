@@ -17,7 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:super_admin'])->group(function () {
-    Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
+    // Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
 });
 
 Route::middleware(['auth', 'verified', 'role:super_admin,inventory_manager'])->group(function () {
@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified', 'role:super_admin,inventory_user'])->grou
     Route::resource('assets', AssetController::class)->except(['create', 'edit']);
 });
 
+Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
 
 
 require __DIR__.'/settings.php';
