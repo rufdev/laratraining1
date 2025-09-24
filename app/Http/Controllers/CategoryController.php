@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryResource;
 
 class CategoryController extends Controller
 {
@@ -20,6 +21,32 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+     public function list(Request $request)
+     {
+         $query = Category::query();
+ 
+         if ($request->has('searchtext') && !empty($request->input('searchtext'))) {
+             $search = $request->input('searchtext');
+             $query
+                 ->whereLike('name', '%'.$search.'%')
+                 ->orWhereLike('description', '%'.$search.'%');
+         }
+ 
+         if ($request->has('sort_field') && $request->has('sort_direction')) {
+             $query->orderBy($request->input('sort_field'), $request->input('sort_direction'));
+         } else {
+             $query->orderBy('name', 'asc'); // Default sorting
+         }
+ 
+         $categories = CategoryResource::collection(
+             $query->orderBy('name', 'asc')->paginate($request->input('per_page', 5))
+         );
+ 
+         
+         return $categories;
+     }
+
     public function store(StoreCategoryRequest $request)
     {
         // \Log::info("message", ['request' => $request->all()]);
