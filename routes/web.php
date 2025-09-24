@@ -12,34 +12,24 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-// Route::get('dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-// Route::get('categories', [CategoryController::class, 'index'])->name('categories');
-// Route::get('locations', [LocationController::class, 'index'])->name('locations');
-// Route::get('assets', [AssetController::class, 'index'])->name('assets');
-// Route::get('manufacturers', [ManufacturerController::class, 'index'])->name('manufacturers');
-
-
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+    Route::get('dashboard', function () { return Inertia::render('Dashboard');})->name('dashboard');
 });
 
 Route::middleware(['auth', 'verified', 'role:super_admin'])->group(function () {
-    Route::get('categories', [CategoryController::class, 'index'])->name('categories');
+    Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
 });
 
 Route::middleware(['auth', 'verified', 'role:super_admin,inventory_manager'])->group(function () {
-    Route::get('manufacturers', [ManufacturerController::class, 'index'])->name('manufacturers');
-    Route::get('locations', [LocationController::class, 'index'])->name('locations');
+    Route::resource('manufacturers', ManufacturerController::class)->except(['create', 'edit']);
+
+    Route::resource('locations', LocationController::class)->except(['create', 'edit']);
 });
 
 Route::middleware(['auth', 'verified', 'role:super_admin,inventory_user'])->group(function () {
-    Route::get('assets', [AssetController::class, 'index'])->name('assets');
+    Route::resource('assets', AssetController::class)->except(['create', 'edit']);
 });
+
 
 
 require __DIR__.'/settings.php';
