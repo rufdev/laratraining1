@@ -39,6 +39,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
+        // \Log::info("message", ['category' => $category->id]);
+        // echo $category;
+
         $category = Category::findOrFail($category->id);
 
         if (!$category) {
