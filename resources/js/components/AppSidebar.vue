@@ -13,9 +13,10 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid, ListCheck  } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { computed } from 'vue';
 
 const mainNavItems: NavItem[] = [
     {
@@ -62,6 +63,21 @@ const footerNavItems: NavItem[] = [
         icon: BookOpen,
     },
 ];
+
+// Access the authenticated user's role from Inertia props
+const page = usePage();
+const userRole = computed(() => page.props.auth?.user?.role || null);
+
+
+// Filter navigation items based on the user's role
+const filteredNavItems = computed(() => {
+    return mainNavItems.filter((item) => {
+        // If no roles are defined, show the item to everyone
+        if (!item.roles) return true;
+        // Check if the user's role is allowed
+        return item.roles.includes(userRole.value);
+    });
+});
 </script>
 
 <template>
