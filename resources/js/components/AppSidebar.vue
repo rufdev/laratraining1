@@ -22,26 +22,31 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+        roles: ['super_admin','inventory_manager','inventory_user']
     },
     {
         title: 'Assets',
         href: '/assets',
-        icon: ListCheck 
+        icon: ListCheck ,
+        roles: ['super_admin','inventory_user']
     },
     {
         title: 'Categories',
         href: '/categories',
-        icon: ListCheck 
+        icon: ListCheck,
+        roles: ['super_admin'] 
     },
     {
         title: 'Locations',
         href: '/locations',
-        icon: ListCheck 
+        icon: ListCheck,
+        roles: ['super_admin','inventory_manager'] 
     },
     {
         title: 'Manufacturers',
         href: '/manufacturers',
-        icon: ListCheck 
+        icon: ListCheck ,
+        roles: ['super_admin','inventory_manager'] 
     }
 ];
 
