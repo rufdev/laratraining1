@@ -33,7 +33,7 @@ class UpdateAssetRequest extends FormRequest
             'model_name' => 'nullable|string|max:255', // Optional, max 255 characters
             'purchase_date' => 'nullable|date', // Optional, must be a valid date
             'purchase_price' => 'nullable|numeric|min:0', // Optional, must be a positive number
-            'status' => 'nullable|in:'. implode(',', array_column(AssetStatusEnum::cases(), 'value')), // Optional, must be one of the valid statuses
+            'status' => 'required|in:'. implode(',', array_column(AssetStatusEnum::cases(), 'value')), // Optional, must be one of the valid statuses
             'notes' => 'nullable|string|max:1000', // Optional, max 1000 characters
         ];
     }
