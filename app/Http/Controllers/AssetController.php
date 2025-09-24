@@ -49,8 +49,9 @@ class AssetController extends Controller
      */
     public function update(UpdateAssetRequest $request, Asset $asset)
     {
+     
         $validatedData = $request->validated();
-        \Log::info('UpdateAssetRequest validated data:', $validatedData);   
+        // \Log::info('UpdateAssetRequest validated data:', $validatedData);   
         $asset->update($validatedData);
 
         return response()->json([
