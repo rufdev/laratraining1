@@ -139,6 +139,25 @@ const schema = z.object({
     description: z.string().toUpperCase().optional(),
 });
 
+const fieldconfig: any = {
+    name: {
+        label: 'Name',
+        inputProps: {
+            type: 'text',
+            class: 'uppercase',
+        },
+        description: 'Name of the category',
+    },
+    description: {
+        label: 'Description',
+        component: 'textarea',
+        inputProps: {
+            class: 'uppercase',
+            placeholder: 'Enter category description',
+        },
+    },
+};
+
 </script>
 <template>
     <!-- Page Title -->
