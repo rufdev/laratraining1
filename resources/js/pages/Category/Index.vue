@@ -4,27 +4,24 @@ import ReusableDropDownAction from '@/components/entitycomponents/ReusableDropDo
 import { AutoForm } from '@/components/ui/auto-form'; // AutoForm component for form handling
 import { Button } from '@/components/ui/button'; // Button component
 import { Checkbox } from '@/components/ui/checkbox'; // Checkbox component for row selection
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'; // Dialog components for forms
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'; // Dialog components for forms
 import AppLayout from '@/layouts/AppLayout.vue'; // Layout component for the page
 import { Head } from '@inertiajs/vue3'; // Head component for setting the page title
 
 /* Import Utilities */
+import { toTypedSchema } from '@vee-validate/zod'; // Utility for converting Zod schemas to Vee-Validate schemas
+import axios from 'axios'; // HTTP client for API requests
 import { ArrowUpDown, Plus } from 'lucide-vue-next'; // Icons for UI
+import { useForm } from 'vee-validate'; // Form validation library
 import { h, ref } from 'vue'; // Vue composition API utilities
+import { toast } from 'vue-sonner'; // Toast notifications
+import * as z from 'zod'; // Zod library for schema validation
 
 /* Import Table Utilities */
 import type { ColumnDef } from '@tanstack/vue-table'; // Type definitions for table columns
 
 /* Import Types */
 import { BreadcrumbItem } from '@/types'; // Type definition for breadcrumbs
-
 /* Base Entity Configuration */
 const baseentityurl = '/categories'; // API endpoint for the entity
 const baseentityname = 'Category'; // Name of the entity
