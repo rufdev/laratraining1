@@ -186,6 +186,11 @@ const onSubmit = async (values: any) =>{
     }
 };
 
+/* Form Handlers */
+const resetForm = () => {
+    form.resetForm(); // Reset the form
+    itemID.value = null; // Clear the item ID
+};
 </script>
 <template>
     <!-- Page Title -->
