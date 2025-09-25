@@ -166,6 +166,10 @@ const form = useForm({
     },
 });
 
+const onSubmit = async (values: any) =>{
+    alert(values);
+};
+
 </script>
 <template>
     <!-- Page Title -->
