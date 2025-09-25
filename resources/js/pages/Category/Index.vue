@@ -104,8 +104,8 @@ const columns: ColumnDef<Category>[] = [
                 { class: 'relative' },
                 h(ReusableDropDownAction, {
                     rowitem,
-                    onEdit: null, // Edit handler
-                    onDelete: null, // Delete handler
+                    onEdit: handleEdit, // Edit handler
+                    onDelete: openDeleteDialog, // Delete handler
                 }),
             );
         },
@@ -194,7 +194,42 @@ const onSubmit = async (values: any) =>{
     }
 };
 
+/* Edit Handler */
+const handleEdit = async (id: number) => {
+    try {
+        mode.value = 'edit'; // Set mode to edit
+        itemID.value = id; // Set the item ID
+        const response = await axios.get(`${baseentityurl}/${id}`); // Fetch the item data
+        form.setValues(response.data); // Populate the form with the item data
+        showDialogForm.value = true; // Show the form dialog
+    } catch (error) {
+        console.log(`Error fetching ${baseentityname} data:`, error);
+        toast.error(`Failed to fetch ${baseentityname} data.`);
+    }
+};
 
+/* Delete Dialog State */
+const showDeleteDialog = ref(false); // State for showing/hiding the delete confirmation dialog
+const itemIDToDelete = ref<number | null>(null); // ID of the item to be deleted
+
+const openDeleteDialog = (id: number) => {
+    itemIDToDelete.value = id; // Set the item ID to delete
+    showDeleteDialog.value = true; // Show the delete confirmation dialog
+};
+
+const handleDelete = async () => {
+    try {
+        if (!itemIDToDelete.value) return;
+
+        await axios.delete(`${baseentityurl}/${itemIDToDelete.value}`); // Delete the item
+        toast.success(`${baseentityname} deleted successfully.`);
+        await tableRef.value?.fetchRows(); // Refresh the table data
+        showDeleteDialog.value = false; // Hide the delete confirmation dialog
+    } catch (error) {
+        console.log(`Error deleting ${baseentityname}:`, error);
+        toast.error(`Failed to delete ${baseentityname}. Please try again.`);
+    }
+};
 </script>
 <template>
     <!-- Page Title -->
@@ -237,6 +272,14 @@ const onSubmit = async (values: any) =>{
                     </AutoForm>
                 </DialogContent>
             </Dialog>
+
+            <ReusableAlertDialog
+                :open="showDeleteDialog"
+                :title="`Delete ${baseentityname}`"
+                :description="`Are you sure you want to delete this ${baseentityname}? This action cannot be undone.`"
+                @confirm="handleDelete"
+                @cancel="showDeleteDialog = false"
+            />
         </div>
     </AppLayout>
 </template>
