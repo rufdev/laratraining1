@@ -6,14 +6,39 @@ use Illuminate\Http\Request;
 use App\Models\Manufacturer;
 use App\Http\Requests\StoreManufacturerRequest;
 use App\Http\Requests\UpdateManufacturerRequest;
-
+use App\Http\Resources\ManufacturerResource;
 class ManufacturerController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         return inertia('Manufacturer/Index');
     }
 
+    public function list(Request $request)
+    {
+        $query = Manufacturer::query();
+
+        if ($request->has('searchtext') && !empty($request->input('searchtext'))) {
+            $search = $request->input('searchtext');
+            $query
+                ->whereLike('name', '%'.$search.'%');
+        }
+
+        if ($request->has('sort_field') && $request->has('sort_direction')) {
+            $query->orderBy($request->input('sort_field'), $request->input('sort_direction'));
+        } else {
+            $query->orderBy('name', 'asc'); // Default sorting
+        }
+
+        $manufacturer = ManufacturerResource::collection(
+            $query->orderBy('name', 'asc')->paginate($request->input('per_page', 5))
+        );
+        
+        return $manufacturer;
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -72,4 +97,3 @@ class ManufacturerController extends Controller
         }
     }
 }
-
