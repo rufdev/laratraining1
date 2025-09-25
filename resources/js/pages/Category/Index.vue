@@ -131,6 +131,22 @@ const handleOpenDialogForm = () => {
             <!-- Table -->
             <ReusableDataTable ref="tableRef" :columns="columns" :baseentityname="baseentityname" :baseentityurl="baseentityurl" />
 
+                <!-- Dialog Form -->
+                <Dialog v-model:open="showDialogForm">
+                <DialogContent class="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>{{ mode === 'create' ? 'Create' : 'Update' }} {{ baseentityname }}</DialogTitle>
+                    </DialogHeader>
+                    <DialogDescription> Use this form to edit the {{ baseentityname }} details. </DialogDescription>
+                    <AutoForm class="space-y-6" :form="form" :schema="schema" :field-config="fieldconfig" @submit="onSubmit">
+                        <DialogFooter>
+                            <Button type="submit" class="bg-green-300">
+                                {{ mode === 'create' ? 'Create' : 'Update' }}
+                            </Button>
+                        </DialogFooter>
+                    </AutoForm>
+                </DialogContent>
+            </Dialog>
         </div>
     </AppLayout>
 </template>
