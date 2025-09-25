@@ -163,6 +163,14 @@ const form = useForm({
     },
 });
 
+/* Form Handlers */
+const resetForm = () => {
+    form.resetForm(); // Reset the form
+    itemID.value = null; // Clear the item ID
+};
+
+const tableRef = ref<InstanceType<typeof ReusableDataTable> | null>(null); // Reference to the table component
+
 const onSubmit = async (values: any) =>{
     try {
         if (mode.value === 'create') {
@@ -186,11 +194,7 @@ const onSubmit = async (values: any) =>{
     }
 };
 
-/* Form Handlers */
-const resetForm = () => {
-    form.resetForm(); // Reset the form
-    itemID.value = null; // Clear the item ID
-};
+
 </script>
 <template>
     <!-- Page Title -->
