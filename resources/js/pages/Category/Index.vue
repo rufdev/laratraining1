@@ -4,27 +4,26 @@ import ReusableDropDownAction from '@/components/entitycomponents/ReusableDropDo
 import { AutoForm } from '@/components/ui/auto-form'; // AutoForm component for form handling
 import { Button } from '@/components/ui/button'; // Button component
 import { Checkbox } from '@/components/ui/checkbox'; // Checkbox component for row selection
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'; // Dialog components for forms
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'; // Dialog components for forms
 import AppLayout from '@/layouts/AppLayout.vue'; // Layout component for the page
 import { Head } from '@inertiajs/vue3'; // Head component for setting the page title
 
 /* Import Utilities */
-import { toTypedSchema } from '@vee-validate/zod'; // Utility for converting Zod schemas to Vee-Validate schemas
-import axios from 'axios'; // HTTP client for API requests
 import { ArrowUpDown, Plus } from 'lucide-vue-next'; // Icons for UI
-import { useForm } from 'vee-validate'; // Form validation library
 import { h, ref } from 'vue'; // Vue composition API utilities
-import { toast } from 'vue-sonner'; // Toast notifications
-import * as z from 'zod'; // Zod library for schema validation
 
 /* Import Table Utilities */
 import type { ColumnDef } from '@tanstack/vue-table'; // Type definitions for table columns
 
 /* Import Types */
 import { BreadcrumbItem } from '@/types'; // Type definition for breadcrumbs
-
-
-
 
 /* Base Entity Configuration */
 const baseentityurl = '/categories'; // API endpoint for the entity
@@ -45,15 +44,17 @@ export interface Category {
     description: string; // Description of the category
 }
 
-
 /* Define Table Columns */
 const columns: ColumnDef<Category>[] = [
     {
         id: 'select', // Column for row selection
         header: ({ table }) =>
             h(Checkbox, {
-                modelValue: table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
-                'onUpdate:modelValue': (value) => table.toggleAllPageRowsSelected(!!value),
+                modelValue:
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && 'indeterminate'),
+                'onUpdate:modelValue': (value) =>
+                    table.toggleAllPageRowsSelected(!!value),
                 ariaLabel: 'Select all',
             }),
         cell: ({ row }) =>
@@ -72,17 +73,28 @@ const columns: ColumnDef<Category>[] = [
                 Button,
                 {
                     variant: 'ghost',
-                    onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                    onClick: () =>
+                        column.toggleSorting(column.getIsSorted() === 'asc'),
                 },
                 () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })],
             );
         },
-        cell: ({ row }) => h('div', { class: 'break-words whitespace-normal' }, row.getValue('name')),
+        cell: ({ row }) =>
+            h(
+                'div',
+                { class: 'break-words whitespace-normal' },
+                row.getValue('name'),
+            ),
     },
     {
         accessorKey: 'description', // Column for category description
         header: 'Description',
-        cell: ({ row }) => h('div', { class: 'break-words whitespace-normal' }, row.getValue('description')),
+        cell: ({ row }) =>
+            h(
+                'div',
+                { class: 'break-words whitespace-normal' },
+                row.getValue('description'),
+            ),
     },
     {
         id: 'actions', // Column for row actions (edit/delete)
@@ -113,6 +125,20 @@ const handleOpenDialogForm = () => {
     mode.value = 'create'; // Set mode to create
 };
 
+/* Form Schema and Configuration */
+const schema = z.object({
+    name: z
+        .string({
+            required_error: 'Name is required',
+            invalid_type_error: 'Name must be a string',
+        })
+        .toUpperCase()
+        .min(3, {
+            message: 'Name must be at least 3 characters long',
+        }),
+    description: z.string().toUpperCase().optional(),
+});
+
 </script>
 <template>
     <!-- Page Title -->
@@ -124,25 +150,33 @@ const handleOpenDialogForm = () => {
             <!-- Create Button -->
             <div class="flex items-center gap-2 py-2">
                 <div class="ml-auto flex items-center gap-2">
-                    <Button class="bg-orange-300" @click="handleOpenDialogForm"> <Plus class="h-4"></Plus> Create {{ baseentityname }} </Button>
+                    <Button class="bg-orange-300" @click="handleOpenDialogForm">
+                        <Plus class="h-4"></Plus> Create {{ baseentityname }}
+                    </Button>
                 </div>
             </div>
 
             <!-- Table -->
-            <ReusableDataTable ref="tableRef" :columns="columns" :baseentityname="baseentityname" :baseentityurl="baseentityurl" />
+            <ReusableDataTable
+                ref="tableRef"
+                :columns="columns"
+                :baseentityname="baseentityname"
+                :baseentityurl="baseentityurl"
+            />
 
-                <!-- Dialog Form -->
-                <Dialog v-model:open="showDialogForm">
+            <!-- Dialog Form -->
+            <Dialog v-model:open="showDialogForm">
                 <DialogContent class="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>{{ mode === 'create' ? 'Create' : 'Update' }} {{ baseentityname }}</DialogTitle>
+                        <DialogTitle >{{ mode === 'create' ? 'Create' : 'Update' }} {{ baseentityname }}</DialogTitle >
                     </DialogHeader>
-                    <DialogDescription> Use this form to edit the {{ baseentityname }} details. </DialogDescription>
-                    <AutoForm class="space-y-6" :form="form" :schema="schema" :field-config="fieldconfig" @submit="onSubmit">
+                    <DialogDescription>
+                        Use this form to edit the {{ baseentityname }} details.
+                    </DialogDescription>
+                    <AutoForm class="space-y-6" :form="form" :schema="schema" :field-config="fieldconfig" @submit="onSubmit" >
                         <DialogFooter>
-                            <Button type="submit" class="bg-green-300">
-                                {{ mode === 'create' ? 'Create' : 'Update' }}
-                            </Button>
+                            <Button type="submit" class="bg-green-300"> 
+                                {{ mode === 'create' ? 'Create' : 'Update' }} </Button>
                         </DialogFooter>
                     </AutoForm>
                 </DialogContent>
