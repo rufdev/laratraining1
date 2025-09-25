@@ -105,6 +105,7 @@ const columns: ColumnDef<Asset>[] = [
             }),
         enableSorting: false, // Disable sorting for this column
         enableHiding: false, // Disable hiding for this column
+        
     },
     {
         accessorKey: 'name', // Column for category name
@@ -133,7 +134,7 @@ const columns: ColumnDef<Asset>[] = [
     {
         accessorKey: 'location.name',
         header: 'Location',
-        cell: ({ row }) => h('div', { class: 'break-words whitespace-normal' }, row.original.location?.name || ''),
+        cell: ({ row }) => h('div', { class: 'break-words whitespace-normal' }, row.original.location?.name || '')
     },
     {
         accessorKey: 'manufacturer.name',
