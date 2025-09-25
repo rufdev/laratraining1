@@ -164,7 +164,26 @@ const form = useForm({
 });
 
 const onSubmit = async (values: any) =>{
-    alert(JSON.stringify(values));
+    try {
+        if (mode.value === 'create') {
+            await axios.post(`${baseentityurl}`, values); // Create a new category
+            toast.success(`${baseentityname} created successfully.`);
+        } else if (mode.value === 'edit') {
+            await axios.put(`${baseentityurl}/${itemID.value}`, values); // Update an existing category
+            toast.success(`${baseentityname} updated successfully.`);
+        }
+
+        resetForm(); // Reset the form
+        await tableRef.value?.fetchRows(); // Refresh the table data
+        showDialogForm.value = false; // Hide the form dialog
+    } catch (error: any) {
+        if (error.response && error.response.status === 422) {
+            form.setErrors(error.response.data.errors); // Set validation errors
+            toast.error('Validation failed. Please check your input.');
+        } else {
+            toast.error('An unexpected error occurred.');
+        }
+    }
 };
 
 </script>
