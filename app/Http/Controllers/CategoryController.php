@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Mail\DataCreatedNotification;
 
 class CategoryController extends Controller
 {
@@ -57,6 +58,9 @@ class CategoryController extends Controller
         $validatedData = $request->validated();
 
         $category = Category::create($validatedData);
+
+        // Send email notification
+        \Mail::to('aguilarufino@gmail.com')->send(new DataCreatedNotification($category->id,$category, url('/categories/'.$category->id)));
 
         return response()->json([
             'message' => 'Category created successfully!',
