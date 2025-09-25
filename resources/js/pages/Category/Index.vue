@@ -158,6 +158,14 @@ const fieldconfig: any = {
     },
 };
 
+const form = useForm({
+    validationSchema: toTypedSchema(schema), // Validation schema
+    initialValues: {
+        name: '',
+        description: '',
+    },
+});
+
 </script>
 <template>
     <!-- Page Title -->
