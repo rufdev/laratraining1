@@ -24,27 +24,30 @@ class CategoryController extends Controller
 
      public function list(Request $request)
      {
-         $query = Category::query();
- 
-         if ($request->has('searchtext') && !empty($request->input('searchtext'))) {
-             $search = $request->input('searchtext');
-             $query
-                 ->whereLike('name', '%'.$search.'%')
-                 ->orWhereLike('description', '%'.$search.'%');
-         }
- 
-         if ($request->has('sort_field') && $request->has('sort_direction')) {
-             $query->orderBy($request->input('sort_field'), $request->input('sort_direction'));
-         } else {
-             $query->orderBy('name', 'asc'); // Default sorting
-         }
- 
-         $categories = CategoryResource::collection(
-             $query->orderBy('name', 'asc')->paginate($request->input('per_page', 5))
-         );
- 
-         
-         return $categories;
+        \Log::info("Entered list function");
+        $query = Category::query();
+
+        \Log::info($request);
+        
+        if ($request->has('searchtext') && !empty($request->input('searchtext'))) {
+            $search = $request->input('searchtext');
+            $query
+                ->whereLike('name', '%'.$search.'%')
+                ->orWhereLike('description', '%'.$search.'%');
+        }
+
+        if ($request->has('sort_field') && $request->has('sort_direction')) {
+            $query->orderBy($request->input('sort_field'), $request->input('sort_direction'));
+        } else {
+            $query->orderBy('name', 'asc'); // Default sorting
+        }
+
+        $categories = CategoryResource::collection(
+            $query->orderBy('name', 'asc')->paginate($request->input('per_page', 5))
+        );
+
+        \Log::info('categories:',['categories' => $categories]);
+        return $categories;
      }
 
     public function store(StoreCategoryRequest $request)
