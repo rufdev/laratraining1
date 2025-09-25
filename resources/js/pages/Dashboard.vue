@@ -1,34 +1,45 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem, 
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import BarChart from '@/components/chartcomponents/BarChart.vue';
+import PieChart from '@/components/chartcomponents/PieChart.vue';
+import DoughnutChart from '@/components/chartcomponents/DoughnutChart.vue';
+
 import AppLayout from '@/layouts/AppLayout.vue';
-import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard().url,
+        href: '/dashboard',
     },
 ];
+
+
+
+
+const totals = ref<any>({
+    total_assets: 0,
+    total_categories: 0,
+    total_manufacturers: 0,
+    total_locations: 0,
+    total_users: 0,
+});
+
+const fetchStats = async () => {
+    try {
+        const response = await axios.get('/dashboard/stats');
+        totals.value = response.data.totals;
+        
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+    }
+};
+
+onMounted(async () => {
+    await fetchStats();
+});
 </script>
 
 <template>
@@ -38,21 +49,62 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div
             class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
         >
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div class="grid auto-rows-min gap-4 md:grid-cols-4">
                 <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
+                    class="rounded-xl border bg-card text-card-foreground shadow"
                 >
-                    <PlaceholderPattern />
+                    <div
+                        class="flex flex-row items-center justify-between space-y-0 gap-y-1.5 p-6 pb-2"
+                    >
+                        <h3 class="text-sm font-medium tracking-tight">
+                            Total Assets
+                        </h3>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <div class="text-2xl font-bold">{{ totals.total_assets }}</div>
+                    </div>
                 </div>
                 <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
+                    class="rounded-xl border bg-card text-card-foreground shadow"
                 >
-                    <PlaceholderPattern />
+                    <div
+                        class="flex flex-row items-center justify-between space-y-0 gap-y-1.5 p-6 pb-2"
+                    >
+                        <h3 class="text-sm font-medium tracking-tight">
+                            Total Users
+                        </h3>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <div class="text-2xl font-bold">{{ totals.total_users }}</div>
+                    </div>
                 </div>
                 <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
+                    class="rounded-xl border bg-card text-card-foreground shadow"
                 >
-                    <PlaceholderPattern />
+                    <div
+                        class="flex flex-row items-center justify-between space-y-0 gap-y-1.5 p-6 pb-2"
+                    >
+                        <h3 class="text-sm font-medium tracking-tight">
+                            Total Categories
+                        </h3>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <div class="text-2xl font-bold">{{ totals.total_categories }}</div>
+                    </div>
+                </div>
+                <div
+                    class="rounded-xl border bg-card text-card-foreground shadow"
+                >
+                    <div
+                        class="flex flex-row items-center justify-between space-y-0 gap-y-1.5 p-6 pb-2"
+                    >
+                        <h3 class="text-sm font-medium tracking-tight">
+                            Total Manufacturers
+                        </h3>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <div class="text-2xl font-bold">{{ totals.total_manufacturers }}</div>
+                    </div>
                 </div>
             </div>
             <div
