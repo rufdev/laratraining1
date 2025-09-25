@@ -164,7 +164,7 @@ const form = useForm({
 });
 
 const onSubmit = async (values: any) =>{
-    alert(values);
+    alert(JSON.stringify(values));
 };
 
 </script>
