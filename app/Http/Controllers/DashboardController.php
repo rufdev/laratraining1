@@ -47,6 +47,13 @@ class DashboardController extends Controller
             ->with('assignedTo:id,name') // Include the user name in the result
             ->get(); // Retrieve the grouped data
 
+        $topTenExpensiveAssets = Asset::orderBy('purchase_price', 'desc')
+        ->limit(10)
+        ->get();
+        $topTenExpensiveAssetsLaptop = Asset::where('category_id',9)
+        ->orderBy('purchase_price', 'desc')
+        ->limit(10)
+        ->get();
         // Return the data as a JSON response
         return response()->json([
             'totals' => [
@@ -62,6 +69,8 @@ class DashboardController extends Controller
                 'assets_by_location' => $assetsByLocation, // Chart data for assets grouped by location
                 'assets_by_assigned_user' => $assetsByAssignedUser, // Chart data for assets grouped by assigned user
             ],
+            'top_ten_expensive_assets' => $topTenExpensiveAssets,
+            'top_ten_expensive_assets_laptop' => $topTenExpensiveAssetsLaptop
         ]);
     }
 }
