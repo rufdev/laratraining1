@@ -102,6 +102,17 @@ const columns: ColumnDef<Category>[] = [
         },
     },
 ];
+
+/* Dialog State */
+const showDialogForm = ref(false); // State for showing/hiding the form dialog
+const mode = ref('create'); // Mode for the form (create/edit)
+const itemID = ref<number | null>(null); // ID of the item being edited
+
+const handleOpenDialogForm = () => {
+    showDialogForm.value = true; // Show the form dialog
+    mode.value = 'create'; // Set mode to create
+};
+
 </script>
 <template>
     <!-- Page Title -->
@@ -113,10 +124,10 @@ const columns: ColumnDef<Category>[] = [
             <!-- Create Button -->
             <div class="flex items-center gap-2 py-2">
                 <div class="ml-auto flex items-center gap-2">
-                    <Button class="bg-sky-300" @click="handleOpenDialogForm"> <Plus class="h-4"></Plus> Create {{ baseentityname }} </Button>
+                    <Button class="bg-orange-300" @click="handleOpenDialogForm"> <Plus class="h-4"></Plus> Create {{ baseentityname }} </Button>
                 </div>
             </div>
-            
+
             <!-- Table -->
             <ReusableDataTable ref="tableRef" :columns="columns" :baseentityname="baseentityname" :baseentityurl="baseentityurl" />
 
