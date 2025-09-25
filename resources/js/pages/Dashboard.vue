@@ -26,19 +26,112 @@ const totals = ref<any>({
     total_locations: 0,
     total_users: 0,
 });
+const charts = ref({} as any);
+const loading = ref(true);
 
 const fetchStats = async () => {
     try {
         const response = await axios.get('/dashboard/stats');
         totals.value = response.data.totals;
-        
+        charts.value = response.data.charts;
     } catch (error) {
         console.error('Error fetching dashboard stats:', error);
     }
 };
 
+const generateRandomColor = () => {
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    return randomColor.padEnd(7, '0'); // Ensure the color is always 6 characters long
+};
+
+let chartData: any;
+let chartOptions: any;
+
+let piechartData: any;
+let piechartOptions: any;
+
+let doughnutData: any;
+let doughnutOptions: any;
+
+let chart2Data: any;
+let chart2Options: any;
+
+const rendercharts = () => {
+     // Asset by Status Bar Chart
+     chartData = {
+        labels: charts.value.assets_by_status ? charts.value.assets_by_status.map((item: any) => item.status) : [],
+        datasets: [
+            {
+                label: 'Assets by Status',
+                backgroundColor: charts.value.assets_by_status ? charts.value.assets_by_status.map(() => generateRandomColor()) : [],
+                data: charts.value.assets_by_status ? charts.value.assets_by_status.map((item: any) => item.total) : [],
+            },
+        ],
+    };
+    chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Total Assets by Status',
+            },
+            datalabels: {
+                display: true,
+                color: '#000000', // Label text color
+                font: {
+                    size: 14, // Label font size
+                    weight: 'bold',
+                },
+                formatter: (value: any) => {
+                    // const label = context.chart.data.labels[context.dataIndex];
+                    return `${value}`; // Format: "Label: Value"
+                },
+            },
+        },
+    };
+
+     //Pie Chart Asset by Category
+     piechartData = {
+        labels: charts.value.assets_by_category ? charts.value.assets_by_category.map((item: any) => item.category.name) : [],
+        datasets: [
+            {
+                label: 'Assets by Category',
+                backgroundColor: charts.value.assets_by_category ? charts.value.assets_by_category.map(() => generateRandomColor()) : [],
+                data: charts.value.assets_by_category ? charts.value.assets_by_category.map((item: any) => item.total) : [],
+            },
+        ],
+    };
+
+    piechartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                
+                position: 'left',
+            },
+            title: {
+                display: true,
+                text: 'Total Assets by Category',
+            },
+            datalabels: {
+                display: true,
+                color: '#000000', // Label text color
+            },
+        },
+    };
+};
+
 onMounted(async () => {
+    loading.value = true;
     await fetchStats();
+    rendercharts();
+    loading.value = false;
 });
 </script>
 
@@ -51,7 +144,7 @@ onMounted(async () => {
         >
             <div class="grid auto-rows-min gap-4 md:grid-cols-4">
                 <div
-                    class="rounded-xl border bg-card text-card-foreground shadow"
+                    class="rounded-xl  bg-green-600 border bg-card text-card-foreground shadow"
                 >
                     <div
                         class="flex flex-row items-center justify-between space-y-0 gap-y-1.5 p-6 pb-2"
@@ -110,54 +203,25 @@ onMounted(async () => {
             <div
                 class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
             >
-                <Card class="w-[350px]">
-                    <CardHeader>
-                        <CardTitle>Create project</CardTitle>
-                        <CardDescription
-                            >Deploy your new project in
-                            one-click.</CardDescription
-                        >
-                    </CardHeader>
-                    <CardContent>
-                        <form>
-                            <div class="grid w-full items-center gap-4">
-                                <div class="flex flex-col space-y-1.5">
-                                    <Label for="name">Name</Label>
-                                    <Input
-                                        id="name"
-                                        placeholder="Name of your project"
-                                    />
-                                </div>
-                                <div class="flex flex-col space-y-1.5">
-                                    <Label for="framework">Framework</Label>
-                                    <Select>
-                                        <SelectTrigger id="framework">
-                                            <SelectValue placeholder="Select" />
-                                        </SelectTrigger>
-                                        <SelectContent position="popper">
-                                            <SelectItem value="nuxt">
-                                                Nuxt
-                                            </SelectItem>
-                                            <SelectItem value="next">
-                                                Next.js
-                                            </SelectItem>
-                                            <SelectItem value="sveltekit">
-                                                SvelteKit
-                                            </SelectItem>
-                                            <SelectItem value="astro">
-                                                Astro
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                        </form>
-                    </CardContent>
-                    <CardFooter class="flex justify-between px-6 pb-6">
-                        <Button variant="outline"> Cancel </Button>
-                        <Button>Deploy</Button>
-                    </CardFooter>
-                </Card>
+            <div class="grid auto-rows-min gap-4 md:grid-cols-2">
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div v-if="loading" class="flex h-full items-center justify-center">
+                        <div class="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4" role="status"></div>
+                    </div>
+                    <div v-else>
+                        <BarChart :chart-data="chartData" :chart-options="chartOptions" />
+                    </div>
+                </div>
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 md:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div v-if="loading" class="flex h-full items-center justify-center">
+                        <div class="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4" role="status"></div>
+                    </div>
+                    <div v-else>
+                        <PieChart :chart-data="piechartData" :chart-options="piechartOptions" />
+                    </div>
+                </div>
+            </div>
+                
             </div>
         </div>
     </AppLayout>
